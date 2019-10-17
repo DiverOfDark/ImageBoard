@@ -9,4 +9,9 @@
       <PackageReference Include="OutCode.EscapeTeams.ObjectRepository.LiteDB" Version="1.0.124" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\js\site.js" />
+    </ItemGroup>
+
 </Project>

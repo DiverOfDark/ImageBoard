@@ -22,9 +22,9 @@ namespace ImageBoard
             CommmitName = Configuration["Properties:CiCommitName"];
         }
 
-        public static string CommmitName { get; }
-        public static string CommmitHash { get; }
-        public static bool IsProduction { get; }
+        public static string CommmitName { get; private set; }
+        public static string CommmitHash { get; private set; }
+        public static bool IsProduction { get; private set; }
 
         public IConfiguration Configuration { get; }
 
