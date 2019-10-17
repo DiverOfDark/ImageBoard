@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,6 +59,13 @@ namespace ImageBoard
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{action=Index}/{id?}", defaults: new {controller = "Home" });
+                endpoints.MapFallbackToController("Index", "Home");
+            });
+
+            app.Use((x, y) =>
+            {
+                x.Response.Redirect("/");
+                return Task.CompletedTask;
             });
         }
     }
