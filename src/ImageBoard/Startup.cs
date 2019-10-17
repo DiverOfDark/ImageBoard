@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace ImageBoard
 {
-    public class Startup
+  public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -20,6 +16,7 @@ namespace ImageBoard
             IsProduction = Configuration["Properties:IsProduction"] == "true";
             CommmitHash = Configuration["Properties:CiCommitHash"];
             CommmitName = Configuration["Properties:CiCommitName"];
+            BaseUri = Configuration["Properties:BaseUri"];
         }
 
         public static string CommmitName { get; private set; }
@@ -27,10 +24,19 @@ namespace ImageBoard
         public static bool IsProduction { get; private set; }
 
         public IConfiguration Configuration { get; }
+        public static string CurrentToken => "1234";
+        public static String BaseUri { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddAuthorization();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(x =>
+            {
+                x.AccessDeniedPath = "/Auth";
+                x.LoginPath = "/Auth";
+                x.LogoutPath = "/Logout";
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -40,13 +46,15 @@ namespace ImageBoard
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<ReverseProxyMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{action=Index}/{id?}", defaults: new {controller = "Home" });
             });
         }
     }

@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ImageBoard.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace ImageBoard.Controllers
@@ -16,26 +19,51 @@ namespace ImageBoard.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        [AllowAnonymous]
+        public ViewResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            return View(nameof(Auth));
         }
 
         [AllowAnonymous]
-        public IActionResult Unauthorized()
+        public IActionResult Auth()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                return Redirect("/");
+            }
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpPost, AllowAnonymous]
+        public async Task<IActionResult> Auth(string token)
         {
-            return View(new ErrorViewModel {RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier});
+            bool tokenMatch = string.Equals(Startup.CurrentToken, token ?? string.Empty);
+
+            if (tokenMatch)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim("PasswordHash", token), 
+                };
+
+
+                var claimsIdentity = new ClaimsIdentity(
+                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+                return Redirect("/");
+            }
+
+            return RedirectToAction(nameof(Auth));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Redirect("/");
         }
     }
 }
