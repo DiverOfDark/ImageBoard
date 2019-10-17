@@ -37,6 +37,8 @@ namespace ImageBoard
                 x.LoginPath = "/Auth";
                 x.LogoutPath = "/Logout";
             });
+            services.AddProxy();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -48,7 +50,8 @@ namespace ImageBoard
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseMiddleware<ReverseProxyMiddleware>();
+            app.UseWebSockets().RunProxy(new Uri(BaseUri));
+            app.RunProxy(new Uri(BaseUri));
 
             app.UseEndpoints(endpoints =>
             {
