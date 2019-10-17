@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - name: Build the BudgetTracker image
+    - name: Build the ImageBoard image
       run: | 
         export MASTER_CACHE=diverofdark/imageboard:master
         export BRANCH_NAME=`echo $GITHUB_REF | sed "s/refs\/heads\///"`
@@ -19,7 +19,7 @@ jobs:
 
         docker build --cache-from $MASTER_CACHE --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-arg "CiCommitName=$BRANCH_NAME" --build-arg "CiCommitHash=$GITHUB_SHA" --build-arg IsProduction=true -t $CACHE_IMAGE .
 
-    - name: Push the BudgetTracker image
+    - name: Push the ImageBoard image
       if: github.event_name == 'push' && github.ref == 'refs/heads/master'
       env: 
         DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
