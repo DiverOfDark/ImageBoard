@@ -8,9 +8,17 @@ namespace ImageBoard
 {
     public class ReverseProxyMiddleware
     {
-        private static readonly HttpClient HttpClient = new HttpClient();
+        private static readonly HttpClient HttpClient;
         private readonly RequestDelegate _nextMiddleware;
 
+        static ReverseProxyMiddleware()
+        {
+            HttpClient = new HttpClient(new HttpClientHandler
+            {
+                AllowAutoRedirect = false
+            });
+        }
+        
         public ReverseProxyMiddleware(RequestDelegate nextMiddleware)
         {
             _nextMiddleware = nextMiddleware;
