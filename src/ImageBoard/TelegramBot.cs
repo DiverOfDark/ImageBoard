@@ -30,7 +30,7 @@ namespace ImageBoard
                 {
                     bool isAdmin = e.Message.From.Username == "diverofdark";
 
-                    if (e.Message.Text == "/register")
+                    if (e.Message.Text == "/register" && e.Message.Chat.Type != ChatType.Private)
                     {
                         _logger.LogInformation($"{e.Message.From} tried to register chat {e.Message.Chat.Title} / {e.Message.Chat.Id}");
                         var chatId = e.Message.Chat.Id;
@@ -49,28 +49,27 @@ namespace ImageBoard
 
                     if (e.Message.Chat.Type == ChatType.Private)
                     {
-                        if (e.Message.Text == "/start")
+                        bool sendPin = false;
+                        foreach (var v in _settings.SavedChatIds)
                         {
-                            bool sendPin = false;
-                            foreach (var v in _settings.SavedChatIds)
+                            var isUser = await _botClient.GetChatMemberAsync(v, e.Message.From.Id);
+                            _logger.LogInformation("Check response: " + JsonConvert.SerializeObject(isUser));
+                            if (isUser.IsMember == true)
                             {
-                                var isUser = await _botClient.GetChatMemberAsync(v, e.Message.From.Id);
-                                if (isUser.IsMember == true)
-                                {
-                                    sendPin = true;
-                                    break;
-                                }
+                                sendPin = true;
+                                break;
                             }
+                        }
 
-                            _logger.LogInformation($"{e.Message.From} tried to get pin. Decision: {sendPin}");
-                            if (sendPin)
-                            {
-                                await _botClient.SendTextMessageAsync(e.Message.Chat.Id, $"Привет друг! Твой пропуск в ФЗЧЬ: {Startup.CurrentToken}. Этот пароль работает до {Startup.CurrentTokenValidTill:G}");
-                            }
-                            else
-                            {
-                                await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Ты не пройдёшь!");
-                            }
+                        _logger.LogInformation($"{e.Message.From} tried to get pin. Decision: {sendPin}");
+                        if (sendPin)
+                        {
+                            await _botClient.SendTextMessageAsync(e.Message.Chat.Id,
+                                $"Привет друг! Твой пропуск в ФЗЧЬ: {Startup.CurrentToken}. Этот пароль работает до {Startup.CurrentTokenValidTill:G}");
+                        }
+                        else
+                        {
+                            await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Ты не пройдёшь!");
                         }
                     }
                 }
