@@ -18,6 +18,7 @@ namespace ImageBoard
             CommmitHash = Configuration["Properties:CiCommitHash"];
             CommmitName = Configuration["Properties:CiCommitName"];
             BaseUri = Configuration["Properties:BaseUri"];
+            TelegramToken = Configuration["Properties:Telegram"];
         }
 
         public static string CommmitName { get; private set; }
@@ -26,6 +27,8 @@ namespace ImageBoard
 
         public IConfiguration Configuration { get; }
         public static string CurrentToken => "1234";
+        
+        public static String TelegramToken { get; private set; }
         public static String BaseUri { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
@@ -40,6 +43,7 @@ namespace ImageBoard
             });
             services.AddProxy();
 
+            services.AddSingleton<TelegramBot>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -53,6 +57,7 @@ namespace ImageBoard
             app.UseAuthorization();
             app.UseWebSockets().RunProxy(new Uri(BaseUri));
             app.RunProxy(new Uri(BaseUri));
+            app.ApplicationServices.GetService<TelegramBot>().Start();
 
             app.UseEndpoints(endpoints =>
             {
