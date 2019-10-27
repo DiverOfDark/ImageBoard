@@ -19,6 +19,7 @@ namespace ImageBoard
             CommmitName = Configuration["Properties:CiCommitName"];
             BaseUri = Configuration["Properties:BaseUri"];
             TelegramToken = Configuration["Properties:Telegram"];
+            CurrentTokenValidTill = DateTime.Now.AddYears(3);
         }
 
         public static string CommmitName { get; private set; }
@@ -30,6 +31,7 @@ namespace ImageBoard
         
         public static String TelegramToken { get; private set; }
         public static String BaseUri { get; private set; }
+        public static DateTime CurrentTokenValidTill { get; private set; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -43,6 +45,7 @@ namespace ImageBoard
             });
             services.AddProxy();
 
+            services.AddSingleton<SavedSettings>();
             services.AddSingleton<TelegramBot>();
         }
 
