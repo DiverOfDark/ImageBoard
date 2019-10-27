@@ -24,8 +24,8 @@ namespace ImageBoard
             {
                 if (e.Message.Text != null)
                 {
-                    await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Hello world");
-                    await _botClient.SendTextMessageAsync(e.Message.Chat.Id, JsonConvert.SerializeObject(e));
+                    // await _botClient.SendTextMessageAsync(e.Message.Chat.Id, "Hello world");
+                    // await _botClient.SendTextMessageAsync(e.Message.Chat.Id, JsonConvert.SerializeObject(e));
                     _logger.LogInformation("Replied to TG message " + (e.Message.From.Username ?? "<unknown>"));
                 }
             }
