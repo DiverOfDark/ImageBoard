@@ -36,10 +36,18 @@ namespace ImageBoard
                         var chatId = e.Message.Chat.Id;
                         if (isAdmin)
                         {
-                            _settings.AddChat(chatId);
-                            await _botClient.SendTextMessageAsync(chatId, 
-                                "Яволь! Я запомнил этот чат как ФЗшный, буду пускать людей отсюда в ФЗЧЬ!");
-                            _logger.LogInformation($"Chat saved as FZ-friendly: {chatId}");
+                            if (!_settings.SavedChatIds.Contains(chatId))
+                            {
+                                _settings.AddChat(chatId);
+                                await _botClient.SendTextMessageAsync(chatId,
+                                    "Яволь! Я запомнил этот чат как ФЗшный, буду пускать людей отсюда в ФЗЧЬ!");
+                                _logger.LogInformation($"Chat saved as FZ-friendly: {chatId}");
+                            }
+                            else
+                            {
+                                await _botClient.SendTextMessageAsync(chatId,
+                                    "Я уже видел этот ФЗшный чат!");
+                            }
                         }
                         else
                         {
@@ -53,8 +61,7 @@ namespace ImageBoard
                         foreach (var v in _settings.SavedChatIds)
                         {
                             var isUser = await _botClient.GetChatMemberAsync(v, e.Message.From.Id);
-                            _logger.LogInformation("Check response: " + JsonConvert.SerializeObject(isUser));
-                            if (isUser.IsMember == true)
+                            if (isUser.Status == ChatMemberStatus.Administrator || isUser.Status == ChatMemberStatus.Creator || isUser.Status == ChatMemberStatus.Member)
                             {
                                 sendPin = true;
                                 break;

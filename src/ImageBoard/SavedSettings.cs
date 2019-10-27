@@ -27,8 +27,11 @@ namespace ImageBoard
 
         public void AddChat(long id)
         {
-            _savedChatIds.Add(id);
-            File.WriteAllText("/data/chats.bot", string.Join(" ", _savedChatIds));
+            if (!_savedChatIds.Contains(id))
+            {
+                _savedChatIds.Add(id);
+                File.WriteAllText("/data/chats.bot", string.Join(" ", _savedChatIds));
+            }
         }
     }
 }
