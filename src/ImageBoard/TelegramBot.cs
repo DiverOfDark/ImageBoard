@@ -71,8 +71,9 @@ namespace ImageBoard
                         _logger.LogInformation($"{e.Message.From} tried to get pin. Decision: {sendPin}");
                         if (sendPin)
                         {
+                            var diff = Startup.CurrentTokenValidTill - DateTime.Now;
                             await _botClient.SendTextMessageAsync(e.Message.Chat.Id,
-                                $"Привет друг! Твой пропуск в ФЗЧЬ: {Startup.CurrentToken}. Этот пароль работает до {Startup.CurrentTokenValidTill:G}");
+                                $"Привет друг! Твой пропуск в ФЗЧЬ: {Startup.CurrentToken}. Этот пароль будет работать ещё {diff}");
                         }
                         else
                         {
