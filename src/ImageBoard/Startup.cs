@@ -1,5 +1,7 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +12,8 @@ namespace ImageBoard
 {
   public class Startup
     {
+        private Timer _timer;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -19,7 +23,14 @@ namespace ImageBoard
             CommmitName = Configuration["Properties:CiCommitName"];
             BaseUri = Configuration["Properties:BaseUri"];
             TelegramToken = Configuration["Properties:Telegram"];
-            CurrentTokenValidTill = DateTime.Now.AddYears(3);
+            _timer = new Timer(UpdateToken, null, TimeSpan.Zero, TimeSpan.FromHours(4));
+        }
+
+        private void UpdateToken(object state)
+        {
+            var pin = new Random(Environment.TickCount).Next() % 1000000;
+            CurrentToken = pin.ToString("000000");
+            CurrentTokenValidTill = DateTime.Now.AddHours(4);
         }
 
         public static string CommmitName { get; private set; }
@@ -27,7 +38,7 @@ namespace ImageBoard
         public static bool IsProduction { get; private set; }
 
         public IConfiguration Configuration { get; }
-        public static string CurrentToken => "1234";
+        public static string CurrentToken {get; private set; }
         
         public static String TelegramToken { get; private set; }
         public static String BaseUri { get; private set; }
