@@ -22,26 +22,26 @@ namespace ImageBoard
         private const string AlreadyAdded = "Я уже видел этот ФЗшный чат!";
         private const string NoAccess = "У тебя нет власти надо мной!";
 
-        private const string Help = @"Привет, <b>{0}</b>!<br/>
-                            Этот бот поможет тебе получить доступ во frizchan - анонимную имиджборду для участников Френдзоны.<br/>
-                            <br/>
-                            Что я умею:<br/>
-                            <b>/code</b> чтобы получить код и ссылку для входа<br/>
-                            <b>/help</b> показать это сообщение<br/>";
+        private const string Help = @"Привет, <b>{0}</b>!
+                            Этот бот поможет тебе получить доступ во frizchan - анонимную имиджборду для участников Френдзоны.
+                            
+                            Что я умею:
+                            <b>/code</b> чтобы получить код и ссылку для входа
+                            <b>/help</b> показать это сообщение";
 
         private const string AdminHelp = @"
-                            <b>/register</b> добавить чат в список ФЗшных (людей из этого чата пускаем в ФЗЧЬ). Работает только в групповых чатах.<br/>
+                            <b>/register</b> добавить чат в список ФЗшных (людей из этого чата пускаем в ФЗЧЬ). Работает только в групповых чатах.
                             <b>/add_admin <i>@username</i></b> добавить <i>username</i> в список админов. Работает только в личке с ботом.";
 
-        private const string Authorized = @"человек прошёл проверку<br/>
-                            Твой код для доступа во frizchan<br/>
-                            {0}<br/>
-                            Портал в <a href=""https://frizchan.ru/"">ФЗЧЬ</a><br/>
+        private const string Authorized = @"человек прошёл проверку
+                            Твой код для доступа во frizchan
+                            {0}
+                            Портал в <a href=""https://frizchan.ru/"">ФЗЧЬ</a>
                             Этот код доступа будет работать ещё {1:HH:mm:ss}";
 
-        private const string NotAuthorized = @"человек не прошёл проверку<br/>
-                                Скорее всего, ты ещё не участвовал во Френдзоне. Ты сможешь получить доступ к борде как только сыграешь хотя бы в одном сезоне!<br/>
-                                Присоединиться к Френдзоне https://granumsalis.ru/friend_zone<br/>
+        private const string NotAuthorized = @"человек не прошёл проверку
+                                Скорее всего, ты ещё не участвовал во Френдзоне. Ты сможешь получить доступ к борде как только сыграешь хотя бы в одном сезоне!
+                                Присоединиться к Френдзоне https://granumsalis.ru/friend_zone
                                 Если ты уже играл, но всё равно не можешь зайти - смело пиши @DmAstr, он тебе обязательно поможет!";
 
         public TelegramBot(ILogger<TelegramBot> logger, SavedSettings settings)
