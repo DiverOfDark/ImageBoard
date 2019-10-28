@@ -31,7 +31,7 @@ namespace ImageBoard
 
         private const string AdminHelp = @"
                             <b>/register</b> добавить чат в список ФЗшных (людей из этого чата пускаем в ФЗЧЬ). Работает только в групповых чатах.
-                            <b>/add_admin <i>@username</i></b> добавить <i>username</i> в список админов. Работает только в личке с ботом.";
+                            <b>/add_admin</b> <i>@username</i> добавить <i>username</i> в список админов. Работает только в личке с ботом.";
 
         private const string Authorized = @"человек прошёл проверку
                             Твой код для доступа во frizchan
