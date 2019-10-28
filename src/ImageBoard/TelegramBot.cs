@@ -59,7 +59,7 @@ namespace ImageBoard
             {
                 if (e.Message.Text != null)
                 {
-                    bool isAdmin = _settings.Admins.Contains(e.Message.From.Username);
+                    bool isAdmin = _settings.Admins.Contains(e.Message.From.Username.ToLower());
 
                     if (e.Message.Text == "/register" && e.Message.Chat.Type != ChatType.Private)
                     {
@@ -103,7 +103,7 @@ namespace ImageBoard
                         {
                             var text = e.Message.Text.Substring("/add_admin".Length);
 
-                            text = text.Trim().TrimStart('@');
+                            text = text.Trim().TrimStart('@').ToLower();
 
                             if (text.Any(char.IsWhiteSpace))
                             {
