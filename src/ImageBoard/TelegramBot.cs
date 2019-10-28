@@ -23,26 +23,30 @@ namespace ImageBoard
         private const string NoAccess = "У тебя нет власти надо мной!";
 
         private const string Help = @"Привет, <b>{0}</b>!
-                            Этот бот поможет тебе получить доступ во frizchan - анонимную имиджборду для участников Френдзоны.
+Этот бот поможет тебе получить доступ во frizchan - анонимную имиджборду для участников Френдзоны.
                             
-                            Что я умею:
-                            <b>/code</b> чтобы получить код и ссылку для входа
-                            <b>/help</b> показать это сообщение";
+Что я умею:
+<b>/code</b> чтобы получить код и ссылку для входа
+<b>/help</b> показать это сообщение";
 
         private const string AdminHelp = @"
-                            <b>/register</b> добавить чат в список ФЗшных (людей из этого чата пускаем в ФЗЧЬ). Работает только в групповых чатах.
-                            <b>/add_admin</b> <i>@username</i> добавить <i>username</i> в список админов. Работает только в личке с ботом.";
+<b>/register</b> добавить чат в список ФЗшных (людей из этого чата пускаем в ФЗЧЬ). Работает только в групповых чатах.
+<b>/add_admin</b> <i>@username</i> добавить <i>username</i> в список админов. Работает только в личке с ботом.";
 
         private const string Authorized = @"человек прошёл проверку
-                            Твой код для доступа во frizchan
-                            {0}
-                            Портал в <a href=""https://frizchan.ru/"">ФЗЧЬ</a>
-                            Этот код доступа будет работать ещё {1:HH:mm:ss}";
+
+Твой код для доступа во frizchan:
+
+<pre>{0}</pre>
+
+Портал в <a href=""https://frizchan.ru/"">ФЗЧЬ</a>
+Этот код доступа будет работать ещё {1}";
 
         private const string NotAuthorized = @"человек не прошёл проверку
-                                Скорее всего, ты ещё не участвовал во Френдзоне. Ты сможешь получить доступ к борде как только сыграешь хотя бы в одном сезоне!
-                                Присоединиться к Френдзоне https://granumsalis.ru/friend_zone
-                                Если ты уже играл, но всё равно не можешь зайти - смело пиши @DmAstr, он тебе обязательно поможет!";
+
+Скорее всего, ты ещё не участвовал во Френдзоне. Ты сможешь получить доступ к борде как только сыграешь хотя бы в одном сезоне!
+Присоединиться к Френдзоне https://granumsalis.ru/friend_zone
+Если ты уже играл, но всё равно не можешь зайти - смело пиши @DmAstr, он тебе обязательно поможет!";
 
         public TelegramBot(ILogger<TelegramBot> logger, SavedSettings settings)
         {
@@ -134,9 +138,12 @@ namespace ImageBoard
                             _logger.LogInformation($"{e.Message.From} tried to get pin. Decision: {sendPin}");
                             if (sendPin)
                             {
-                                var diff = Startup.CurrentTokenValidTill - DateTime.Now;
+                                var dateDifference = Startup.CurrentTokenValidTill - DateTime.Now;
+
+                                string formattedTimeSpan = $"{dateDifference.TotalHours:D2}:{dateDifference.Minutes:D2}:{dateDifference.Seconds:D2}";
+                                
                                 await _botClient.SendTextMessageAsync(e.Message.Chat.Id,
-                                    string.Format(Authorized, Startup.CurrentToken, diff), ParseMode.Html, replyMarkup: replyMarkup);
+                                    string.Format(Authorized, Startup.CurrentToken, formattedTimeSpan), ParseMode.Html, replyMarkup: replyMarkup);
                             }
                             else
                             {
