@@ -109,7 +109,7 @@ namespace ImageBoard
 
                             text = text.Trim().TrimStart('@').ToLower();
 
-                            if (text.Any(char.IsWhiteSpace))
+                            if (text.Any(char.IsWhiteSpace) || text.Length == 0)
                             {
                                 await _botClient.SendTextMessageAsync(e.Message.Chat, string.Format(CantAddAdmin, text));
                             }
