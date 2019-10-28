@@ -103,7 +103,7 @@ namespace ImageBoard
                             }
                             await _botClient.SendTextMessageAsync(e.Message.Chat, message, ParseMode.Html, replyMarkup: replyMarkup);
                         }
-                        else if (e.Message.Text == "/add_admin")
+                        else if (e.Message.Text.StartsWith("/add_admin"))
                         {
                             var text = e.Message.Text.Substring("/add_admin".Length);
 
@@ -140,10 +140,8 @@ namespace ImageBoard
                             {
                                 var dateDifference = Startup.CurrentTokenValidTill - DateTime.Now;
 
-                                string formattedTimeSpan = $"{dateDifference.TotalHours:D2}:{dateDifference.Minutes:D2}:{dateDifference.Seconds:D2}";
-                                
                                 await _botClient.SendTextMessageAsync(e.Message.Chat.Id,
-                                    string.Format(Authorized, Startup.CurrentToken, formattedTimeSpan), ParseMode.Html, replyMarkup: replyMarkup);
+                                    string.Format(Authorized, Startup.CurrentToken, dateDifference.ToString("g")), ParseMode.Html, replyMarkup: replyMarkup);
                             }
                             else
                             {
